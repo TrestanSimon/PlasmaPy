@@ -11,8 +11,8 @@
 PlasmaPy Documentation
 ######################
 
-PlasmaPy_ is an open source community-developed core Python_ 3.7+
-package for plasma physics currently under development.
+PlasmaPy_ is an open source community-developed core Python_
+|minpython|\ + package for plasma physics currently under development.
 
 Example highlights
 ------------------
@@ -20,24 +20,23 @@ Example highlights
 .. nbgallery::
    :hidden:
 
+   notebooks/getting_started/particles
    notebooks/diagnostics/charged_particle_radiography_particle_tracing
    notebooks/dispersion/two_fluid_dispersion
    notebooks/diagnostics/thomson
    notebooks/analysis/swept_langmuir/find_floating_potential
    notebooks/formulary/thermal_bremsstrahlung
-   notebooks/plasma/grids_nonuniform
-
 
 .. toctree::
    :caption: First Steps
    :maxdepth: 1
 
-   Vision Statement <about/vision_statement>
    Installing <install>
+   getting_started
    examples
    COMMUNICATION
    CONTRIBUTING
-   CODE_OF_CONDUCT
+   Code of Conduct <CODE_OF_CONDUCT.rst>
    about/citation
 
 .. toctree::
@@ -49,17 +48,20 @@ Example highlights
    Formulary <formulary/index>
    Particles <particles/index>
    Simulation <simulation/index>
+   Plasma Calculator <plasma_calculator/index>
    Plasma Objects <plasma/index>
    Package Utilities <utils/index>
 
 .. toctree::
    :maxdepth: 1
-   :caption: Guide for Contributors
+   :caption: Contributor Guide
 
-   Overview <development/index>
-   development/code_guide
-   development/doc_guide
-   development/testing_guide
+   Overview <contributing/index>
+   contributing/code_guide
+   contributing/changelog_guide
+   contributing/doc_guide
+   contributing/testing_guide
+   contributing/release_guide
 
 .. toctree::
    :maxdepth: 1
@@ -69,7 +71,7 @@ Example highlights
    bibliography
    glossary
    whatsnew/index
-   about/stability
+   Vision Statement <about/vision_statement>
    PlasmaPy.org <https://www.plasmapy.org>
 
 .. The about PlasmaPy section has some important information that would

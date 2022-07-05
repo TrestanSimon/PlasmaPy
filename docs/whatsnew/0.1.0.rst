@@ -1,5 +1,5 @@
-Version 0.1.0
-=============
+PlasmaPy v0.1.0
+===============
 
 Version 0.1.0 is the initial development release of PlasmaPy.  This
 version is a prototype and a preview, and is not feature complete.
@@ -27,8 +27,7 @@ New Features
   checks with `Coveralls <https://coveralls.io/>`_.
 
 * Decided upon code and docstring style conventions and set up
-  automated code style checks with `pep8speaks
-  <https://pep8speaks.com/>`_.
+  automated code style checks with ``pep8speaks``.
 
 * Developed `online documentation for PlasmaPy
   <https://docs.plasmapy.org>`_ that is hosted by `Read the Docs`_.
