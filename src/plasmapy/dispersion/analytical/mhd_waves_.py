@@ -149,7 +149,7 @@ class AbstractMHDWave(ABC):
                 f"assumption of the dispersion relation (ω/ω_c ≪ 1 and ω/ω_p ≪ 1).",
                 PhysicsWarning,
             )
-        return np.squeeze(omega)
+        return omega
 
     @abstractmethod
     def angular_frequency(
@@ -308,7 +308,7 @@ class AbstractMHDWave(ABC):
         """
         angular_frequency = self.angular_frequency(k, theta)
         theta, k = self._validate_k_theta(k, theta)
-        return np.squeeze(angular_frequency / k)
+        return angular_frequency / k
 
 
 class AlfvenWave(AbstractMHDWave):
@@ -768,15 +768,13 @@ class FastMagnetosonicWave(AbstractMHDWave):
         theta, k = super()._validate_k_theta(k, theta)
         return [
             phase_velocity,
-            np.squeeze(
-                self._Alfven_speed**2
-                * self._sound_speed**2
-                * np.sin(theta)
-                * np.cos(theta)
-                / (
-                    phase_velocity
-                    * (2 * phase_velocity**2 - self._magnetosonic_speed**2)
-                )
+            self._Alfven_speed**2
+            * self._sound_speed**2
+            * np.sin(theta)
+            * np.cos(theta)
+            / (
+                phase_velocity
+                * (2 * phase_velocity**2 - self._magnetosonic_speed**2)
             ),
         ]
 
@@ -1011,16 +1009,14 @@ class SlowMagnetosonicWave(AbstractMHDWave):
 
         theta, k = super()._validate_k_theta(k, theta)
         group_velocity = np.ones(k.shape) * (0 * u.m / u.s)
-        np.squeeze(
-            np.divide(
-                self._Alfven_speed**2
-                * self._sound_speed**2
-                * np.sin(theta)
-                * np.cos(theta),
-                phase_velocity * (2 * phase_velocity**2 - self._magnetosonic_speed**2),
-                out=group_velocity,
-                where=phase_velocity != 0,
-            )
+        np.divide(
+            self._Alfven_speed**2
+            * self._sound_speed**2
+            * np.sin(theta)
+            * np.cos(theta),
+            phase_velocity * (2 * phase_velocity**2 - self._magnetosonic_speed**2),
+            out=group_velocity,
+            where=phase_velocity != 0,
         )
 
         return [
