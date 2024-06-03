@@ -138,7 +138,7 @@ class AbstractMHDWave(ABC):
         return np.meshgrid(theta, k)
 
     @validate_quantities
-    def _validate_angular_frequency(self, omega: u.Quantity[u.rad / u.s]):
+    def _validate_angular_frequency(self, omega: u.Quantity[u.rad / u.s], _squeeze=True):
         """Validate and return angular frequency."""
         omega_gyrofrequency_max = np.max(omega / self._gyrofrequency)
         omega_plasma_frequency_max = np.max(omega / self._plasma_frequency)
@@ -149,13 +149,14 @@ class AbstractMHDWave(ABC):
                 f"assumption of the dispersion relation (ω/ω_c ≪ 1 and ω/ω_p ≪ 1).",
                 PhysicsWarning,
             )
-        return np.squeeze(omega)
+        return np.squeeze(omega) if _squeeze else omega
 
     @abstractmethod
     def angular_frequency(
         self,
         k: u.Quantity[u.rad / u.m],
         theta: u.Quantity[u.rad],
+        _squeeze=True,
     ) -> u.Quantity[u.rad / u.s]:
         r"""
         Calculate the angular frequency of magnetohydrodynamic waves.
@@ -265,7 +266,7 @@ class AbstractMHDWave(ABC):
     @check_relativistic
     @validate_quantities
     def phase_velocity(
-        self, k: u.Quantity[u.rad / u.m], theta: u.Quantity[u.rad]
+        self, k: u.Quantity[u.rad / u.m], theta: u.Quantity[u.rad], _squeeze=True
     ) -> u.Quantity[u.m / u.s]:
         r"""
         Calculate the phase velocities of magnetohydrodynamic waves.
@@ -306,9 +307,9 @@ class AbstractMHDWave(ABC):
             When the computed wave frequencies violate the low-frequency
             (:math:`ω ≪ ω_c,ω_p`) assumption of the dispersion relation.
         """
-        angular_frequency = self.angular_frequency(k, theta)
+        angular_frequency = self.angular_frequency(k, theta, _squeeze=False)
         theta, k = self._validate_k_theta(k, theta)
-        return np.squeeze(angular_frequency / k)
+        return np.squeeze(angular_frequency / k) if _squeeze else angular_frequency / k
 
 
 class AlfvenWave(AbstractMHDWave):
@@ -391,7 +392,7 @@ class AlfvenWave(AbstractMHDWave):
     <Quantity 218060.97295233 m / s>
     """
 
-    def angular_frequency(self, k: u.Quantity[u.rad / u.m], theta: u.Quantity[u.rad]):
+    def angular_frequency(self, k: u.Quantity[u.rad / u.m], theta: u.Quantity[u.rad], _squeeze=True):
         r"""
         Calculate the angular frequency of magnetohydrodynamic
         Alfvén waves.
@@ -461,7 +462,7 @@ class AlfvenWave(AbstractMHDWave):
         """
         theta, k = super()._validate_k_theta(k, theta)
         omega = k * self._Alfven_speed * np.abs(np.cos(theta))
-        return super()._validate_angular_frequency(omega)
+        return super()._validate_angular_frequency(omega, _squeeze=_squeeze)
 
     def group_velocity(self, k: u.Quantity[u.rad / u.m], theta: u.Quantity[u.rad]):
         r"""
@@ -521,7 +522,7 @@ class AlfvenWave(AbstractMHDWave):
         direction of the unperturbed magnetic field and :math:`v_A` is
         the Alfvén speed.
         """
-        phase_velocity = self.phase_velocity(k, theta)
+        phase_velocity = self.phase_velocity(k, theta, _squeeze=False)
         theta, k = super()._validate_k_theta(k, theta)
         return [
             phase_velocity,
@@ -614,7 +615,7 @@ class FastMagnetosonicWave(AbstractMHDWave):
     <Quantity 218060.97295233 m / s>
     """
 
-    def angular_frequency(self, k: u.Quantity[u.rad / u.m], theta: u.Quantity[u.rad]):
+    def angular_frequency(self, k: u.Quantity[u.rad / u.m], theta: u.Quantity[u.rad], _squeeze=True):
         r"""
         Calculate the angular frequency of a fast magnetosonic waves.
 
@@ -703,7 +704,7 @@ class FastMagnetosonicWave(AbstractMHDWave):
             )
             / 2
         )
-        return super()._validate_angular_frequency(omega)
+        return super()._validate_angular_frequency(omega, _squeeze=_squeeze)
 
     def group_velocity(self, k: u.Quantity[u.rad / u.m], theta: u.Quantity[u.rad]):
         r"""
@@ -764,7 +765,7 @@ class FastMagnetosonicWave(AbstractMHDWave):
         and the unperturbed magnetic field, and :math:`v_{ph}` is the
         phase velocity.
         """
-        phase_velocity = self.phase_velocity(k, theta)
+        phase_velocity = self.phase_velocity(k, theta, _squeeze=False)
         theta, k = super()._validate_k_theta(k, theta)
         return [
             phase_velocity,
@@ -860,7 +861,7 @@ class SlowMagnetosonicWave(AbstractMHDWave):
     <Quantity 185454.39417735 m / s>
     """
 
-    def angular_frequency(self, k: u.Quantity[u.rad / u.m], theta: u.Quantity[u.rad]):
+    def angular_frequency(self, k: u.Quantity[u.rad / u.m], theta: u.Quantity[u.rad], _squeeze=True):
         r"""
         Calculate the angular frequency of slow magnetosonic waves.
 
@@ -946,7 +947,7 @@ class SlowMagnetosonicWave(AbstractMHDWave):
             )
             / 2
         )
-        return super()._validate_angular_frequency(omega)
+        return super()._validate_angular_frequency(omega, _squeeze=_squeeze)
 
     def group_velocity(self, k: u.Quantity[u.rad / u.m], theta: u.Quantity[u.rad]):
         r"""
@@ -1007,7 +1008,7 @@ class SlowMagnetosonicWave(AbstractMHDWave):
         and the unperturbed magnetic field, and :math:`v_{ph}` is the
         phase velocity.
         """
-        phase_velocity = self.phase_velocity(k, theta)
+        phase_velocity = self.phase_velocity(k, theta, _squeeze=False)
 
         theta, k = super()._validate_k_theta(k, theta)
         group_velocity = np.ones(k.shape) * (0 * u.m / u.s)
